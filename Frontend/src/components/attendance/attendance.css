@@ -1,0 +1,129 @@
+/* ===== GLOBAL ===== */
+.container {
+  font-family: "Inter", sans-serif;
+}
+
+/* ===== HEADER ===== */
+h4 {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* ===== ALERT STATUS BAR ===== */
+.alert {
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+/* ===== SUMMARY CARD ===== */
+.card {
+  border: none;
+  border-radius: 14px;
+  transition: all 0.3s ease;
+}
+
+.card-body {
+  padding: 1.2rem;
+}
+
+.card strong {
+  font-size: 15px;
+  color: #555;
+}
+
+/* ===== SUMMARY TEXT COLORS ===== */
+.text-success {
+  font-weight: 600;
+}
+
+.text-danger {
+  font-weight: 600;
+}
+
+/* ===== CALENDAR ===== */
+.react-calendar {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 10px;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.react-calendar__tile {
+  border-radius: 10px;
+  height: 60px;
+  transition: 0.2s ease;
+  position: relative;
+}
+
+.react-calendar__tile:hover {
+  background: #f0f4ff;
+  cursor: pointer;
+}
+
+.react-calendar__tile--active {
+  background: #4f46e5 !important;
+  color: white;
+}
+
+/* ===== STATUS BADGES INSIDE CALENDAR ===== */
+.react-calendar .badge {
+  font-size: 10px;
+  padding: 3px 6px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+
+/* ===== RIGHT PANEL CARD ===== */
+.card-header {
+  font-weight: 600;
+  border-top-left-radius: 14px !important;
+  border-top-right-radius: 14px !important;
+}
+
+/* ===== TABLE ===== */
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table td {
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+/* ===== STATUS BADGES ===== */
+.badge {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+/* ===== BUTTON ===== */
+.btn {
+  border-radius: 10px;
+  font-size: 14px;
+  padding: 6px 14px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .react-calendar__tile {
+    height: 50px;
+  }
+
+  .table {
+    font-size: 12px;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,56 @@
+/* Gradient text for headers */
+.text-gradient {
+  background: linear-gradient(90deg, #4f46e5, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Dashboard card styling */
+.dashboard-card {
+  border-radius: 16px; 
+  border: 1px solid #e5e7eb; 
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  transition: 0.25s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  border-color: #59595c; 
+}
+
+/* Card icon */
+.card-icon {
+  width: 48px;   /* Slightly bigger icon */
+  height: 48px;
+  background: #eef2ff;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px; /* Rounded icon */
+}
+
+/* Card title and description */
+.card-title {
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+
+.card-desc {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Optional small status text */
+.card-status {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* Buttons rounded */
+.btn {
+  border-radius: 12px !important; 
+}
