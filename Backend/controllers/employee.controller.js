@@ -51,7 +51,7 @@ exports.checkEmail = async (req, res, next) => {
     }
 
     const [rows] = await db.execute(
-      "SELECT email FROM Employee WHERE LOWER(email) = LOWER(?)",
+      "SELECT email FROM employee WHERE LOWER(email) = LOWER(?)",
       [email]
     );
 

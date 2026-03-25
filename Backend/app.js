@@ -25,7 +25,7 @@ const dashboardRoutes  = require("./routes/dashboard.routes");
 const errorHandler = require("./middleware/error.middleware");
 
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"],
+  origin: ["http://localhost", "http://localhost:5174"],
   credentials: true
 }));
 app.use(express.json());

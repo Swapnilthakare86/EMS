@@ -72,8 +72,8 @@ exports.login = async (req, res, next) => {
         ul.username,
         ul.password_hash,
         e.role_id
-      FROM User_Login ul
-      JOIN Employee e ON ul.employee_id = e.employee_id
+      FROM user_login ul
+      JOIN employee e ON ul.employee_id = e.employee_id
       WHERE (ul.employee_code=? OR ul.username=?)
       AND ul.is_active = 1`,
       [login_id, login_id]
@@ -173,8 +173,8 @@ exports.forgotPassword = async (req, res, next) => {
       `SELECT
         u.employee_id,
         e.email
-      FROM User_Login u
-      JOIN Employee e
+      FROM user_login u
+      JOIN employee e
       ON u.employee_id = e.employee_id
       WHERE u.employee_code=? OR u.username=?`,
       [login_id, login_id]
@@ -293,7 +293,7 @@ exports.resetPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await db.execute(
-      `UPDATE User_Login
+      `UPDATE user_login
        SET password_hash=?
        WHERE employee_id=?`,
       [hashedPassword, decoded.employee_id]

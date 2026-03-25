@@ -9,7 +9,7 @@ exports.createEmployee = async (data) => {
 
   // CHECK DUPLICATE FIRST
   const [existing] = await db.execute(
-    "SELECT email FROM Employee WHERE LOWER(email) = LOWER(?)",
+    "SELECT email FROM employee WHERE LOWER(email) = LOWER(?)",
     [email]
   );
 
@@ -21,7 +21,7 @@ exports.createEmployee = async (data) => {
 
   // ================= EMP CODE =================
   const [rows] = await db.execute(
-    "SELECT employee_code FROM Employee ORDER BY employee_id DESC LIMIT 1"
+    "SELECT employee_code FROM employee ORDER BY employee_id DESC LIMIT 1"
   );
 
   let newCode = "EMP001";
@@ -37,7 +37,7 @@ exports.createEmployee = async (data) => {
 
   // ================= INSERT =================
   const sql = `
-  INSERT INTO Employee
+  INSERT INTO employee
   (employee_code, first_name, last_name, email, phone, dob, gender,
    company_id, location_id, department_id, job_position_id,
    employment_type_id, reporting_manager_id, hire_date, role_id)
@@ -63,7 +63,7 @@ exports.createEmployee = async (data) => {
   ]);
 
   const [employee] = await db.execute(
-    `SELECT * FROM Employee WHERE employee_id=?`,
+    `SELECT * FROM employee WHERE employee_id=?`,
     [result.insertId]
   );
 
@@ -96,10 +96,10 @@ exports.getEmployeeByCode = async (code) => {
     j.position_title,
     r.role_name,
     m.value AS employment_type
-  FROM Employee e
-  LEFT JOIN Department d ON e.department_id=d.department_id
-  LEFT JOIN Job_Position j ON e.job_position_id=j.job_position_id
-  LEFT JOIN Role r ON e.role_id=r.role_id
+  FROM employee e
+  LEFT JOIN department d ON e.department_id=d.department_id
+  LEFT JOIN job_position j ON e.job_position_id=j.job_position_id
+  LEFT JOIN role r ON e.role_id=r.role_id
   LEFT JOIN master_data m ON e.employment_type_id = m.master_data_id
   WHERE e.employee_code = ?
   `;
@@ -129,10 +129,10 @@ exports.getAllEmployees = async () => {
     d.department_name,
     j.position_title,
     r.role_name
-  FROM Employee e
-  LEFT JOIN Department d ON e.department_id=d.department_id
-  LEFT JOIN Job_Position j ON e.job_position_id=j.job_position_id
-  LEFT JOIN Role r ON e.role_id=r.role_id
+  FROM employee e
+  LEFT JOIN department d ON e.department_id=d.department_id
+  LEFT JOIN job_position j ON e.job_position_id=j.job_position_id
+  LEFT JOIN role r ON e.role_id=r.role_id
   `;
 
   const [rows] = await db.execute(sql);
@@ -168,10 +168,10 @@ exports.getEmployeeById = async (id) => {
     j.position_title,
     r.role_name,
     m.value AS employment_type
-  FROM Employee e
-  LEFT JOIN Department d ON e.department_id=d.department_id
-  LEFT JOIN Job_Position j ON e.job_position_id=j.job_position_id
-  LEFT JOIN Role r ON e.role_id=r.role_id
+  FROM employee e
+  LEFT JOIN department d ON e.department_id=d.department_id
+  LEFT JOIN job_position j ON e.job_position_id=j.job_position_id
+  LEFT JOIN role r ON e.role_id=r.role_id
   LEFT JOIN master_data m ON e.employment_type_id = m.master_data_id
   WHERE e.employee_id = ?
   `;
@@ -188,7 +188,7 @@ exports.getEmployeeById = async (id) => {
 exports.updateEmployee = async (id,data) => {
 
   const sql = `
-  UPDATE Employee
+  UPDATE employee
   SET first_name=?,
       last_name=?,
       email=?,
@@ -232,7 +232,7 @@ exports.updateEmployee = async (id,data) => {
 exports.deleteEmployee = async (id) => {
 
   return db.execute(
-    "DELETE FROM Employee WHERE employee_id=?",
+    "DELETE FROM employee WHERE employee_id=?",
     [id]
   );
 
@@ -244,7 +244,7 @@ exports.deleteEmployee = async (id) => {
 exports.getLastEmployeeCode = async () => {
 
   const [rows] = await db.execute(
-    "SELECT employee_code FROM Employee ORDER BY employee_id DESC LIMIT 1"
+    "SELECT employee_code FROM employee ORDER BY employee_id DESC LIMIT 1"
   );
 
   return rows.length ? rows[0] : null;
@@ -254,7 +254,7 @@ exports.getLastEmployeeCode = async () => {
 // UPDATE REPORTING MANAGER ONLY
 exports.updateReportingManager = async (id, managerId) => {
   const [result] = await db.execute(
-    "UPDATE Employee SET reporting_manager_id = ? WHERE employee_id = ?",
+    "UPDATE employee SET reporting_manager_id = ? WHERE employee_id = ?",
     [managerId || null, id]
   );
   return result;
@@ -268,8 +268,8 @@ exports.getManagers = async () => {
     e.employee_id,
     e.first_name,
     e.last_name
-  FROM Employee e
-  JOIN Role r ON e.role_id = r.role_id
+  FROM employee e
+  JOIN role r ON e.role_id = r.role_id
   WHERE r.role_name = 'Manager'
   ORDER BY e.first_name
   `;
