@@ -4,46 +4,22 @@ import axiosClient from "../../api/axiosClient";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./attendance.css";
+import { formatTime, formatHours, getWorkingHours, todayUTC } from "../../utils/timeUtils";
 
 // DB status IDs
 const STATUS_PRESENT  = 4;
 const STATUS_ABSENT   = 5;
 const STATUS_HALF_DAY = 13;
 
-const SHIFT_START    = "10:00:00";
-const REQUIRED_HOURS = 8.5;
-const HALF_DAY_MIN   = 4;
+const SHIFT_START_UTC = "04:30:00"; // 10:00 AM IST = 04:30 UTC
+const REQUIRED_HOURS  = 8.5;
+const HALF_DAY_MIN    = 4;
 
 const formatDate = (d) => {
   const yy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
   return `${yy}-${mm}-${dd}`;
-};
-
-const formatTime12 = (time) => {
-  if (!time || time === "-" || time === "00:00:00") return "-";
-  const [hour, minute] = time.split(":");
-  let h = parseInt(hour);
-  const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12;
-  return `${h}:${minute} ${ampm}`;
-};
-
-const getWorkingHours = (checkIn, checkOut) => {
-  if (!checkIn || !checkOut || checkIn === "-" || checkOut === "-" || checkOut === "00:00:00") return 0;
-  const start = new Date(`1970-01-01T${checkIn}`);
-  const end   = new Date(`1970-01-01T${checkOut}`);
-  if (end <= start) return 0;
-  return (end - start) / (1000 * 60 * 60);
-};
-
-const formatHours = (checkIn, checkOut) => {
-  const h = getWorkingHours(checkIn, checkOut);
-  if (!h) return "-";
-  const hrs  = Math.floor(h);
-  const mins = Math.round((h % 1) * 60);
-  return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
 };
 
 // Calculate live status for TODAY only (not stored yet)
@@ -74,7 +50,7 @@ function Attendance() {
   const [summary,        setSummary]        = useState({ working: 0, present: 0, absent: 0, halfDay: 0, leave: 0 });
 
   const employeeId = Number(localStorage.getItem("employee_id"));
-  const todayStr   = formatDate(new Date());
+  const todayStr   = todayUTC();
 
   useEffect(() => { fetchData(); }, []);
 
@@ -133,7 +109,7 @@ function Attendance() {
     else               status = att ? dbStatusToLabel(att.attendance_status_id) : "A";
 
     const isLate = att?.check_in && att.check_in !== "-" &&
-      new Date(`1970-01-01T${att.check_in}`) > new Date(`1970-01-01T${SHIFT_START}`);
+      new Date(`1970-01-01T${att.check_in}Z`) > new Date(`1970-01-01T${SHIFT_START_UTC}Z`);
 
     setSelectedRecord({
       date: ds,
@@ -325,15 +301,15 @@ function Attendance() {
                   <tbody>
                     <tr>
                       <td>{selectedRecord.employee_code} - {selectedRecord.first_name}</td>
-                      <td>{formatTime12(selectedRecord.check_in)}</td>
-                      <td>{formatTime12(selectedRecord.check_out)}</td>
+                      <td>{formatTime(selectedRecord.check_in)}</td>
+                      <td>{formatTime(selectedRecord.check_out)}</td>
                       <td>
                         <span className={badgeCls(selectedRecord.status)}>
                           {statusLabel(selectedRecord.status)}
                         </span>
                         {selectedRecord.late && <span className="badge bg-warning text-dark ms-1">Late</span>}
                       </td>
-                      <td>{formatHours(selectedRecord.check_in, selectedRecord.check_out)}</td>
+                      <td>{formatHours(selectedRecord.check_in, selectedRecord.check_out, selectedRecord.date === todayStr)}</td>
                     </tr>
                   </tbody>
                 </table>

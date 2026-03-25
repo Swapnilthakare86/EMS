@@ -35,20 +35,19 @@ function EmployeeDashboard() {
     fetchDashboard();
   }, [empId]);
 
-  // Live ticker: always calculates check_in → current system time, updates every second
+  // Live ticker: check_in is stored as UTC "HH:MM:SS", diff against system now
   useEffect(() => {
     if (!checkInTime) return;
     const tick = () => {
-      const now = new Date();
-      const [h, m, s] = checkInTime.split(":").map(Number);
-      const start = new Date(now);
-      start.setHours(h, m, s, 0);
+      const now = new Date(); // system local time
+      const todayUTC = now.toISOString().slice(0, 10); // YYYY-MM-DD
+      const start = new Date(`${todayUTC}T${checkInTime}Z`); // parse as UTC
       const diffSec = Math.max(0, Math.floor((now - start) / 1000));
       const hh = Math.floor(diffSec / 3600);
       const mm = Math.floor((diffSec % 3600) / 60);
       const ss = diffSec % 60;
       setWorkingHours(
-        `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`
+        `${String(hh).padStart(2, "0")}h ${String(mm).padStart(2, "0")}m ${String(ss).padStart(2, "0")}s`
       );
     };
     tick();

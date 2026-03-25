@@ -9,6 +9,9 @@ router.post("/", verifyToken, leaveRequestController.addLeave);
 // READ ALL
 router.get("/", verifyToken, leaveRequestController.getAllLeaves);
 
+// READ BY EMPLOYEE — must be before /:id to avoid conflict
+router.get("/employee/:empId", verifyToken, leaveRequestController.getLeaveByEmpId);
+
 // READ BY ID
 router.get("/:id", verifyToken, leaveRequestController.getLeaveById);
 
@@ -20,8 +23,5 @@ router.put("/status/:id", verifyToken, leaveRequestController.updateLeaveStatus)
 
 // DELETE
 router.delete("/:id", verifyToken, leaveRequestController.deleteLeave);
-
-// READ BY EMPLOYEE
-router.get("/employee/:empId", verifyToken, leaveRequestController.getLeaveByEmpId);
 
 module.exports = router;

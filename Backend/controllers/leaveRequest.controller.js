@@ -114,17 +114,8 @@ exports.deleteLeave = async (req, res, next) => {
 // GET BY EMPLOYEE
 exports.getLeaveByEmpId = async (req, res, next) => {
   try {
-
     const rows = await LeaveRequest.getLeaveRequestsByEmployeeId(req.params.empId);
-
-    if (!rows.length) {
-      return res.status(404).json({
-        message: "No leave requests found for this employee"
-      });
-    }
-
-    res.json(rows);
-
+    res.json(rows); // return empty array if no leaves — not 404
   } catch (err) {
     next(err);
   }
