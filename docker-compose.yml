@@ -5,15 +5,15 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: emp_data
       TZ: Asia/Kolkata
     ports:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${MYSQL_ROOT_USER}", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -46,6 +46,7 @@ services:
       - ./reports-service/.env
     environment:
       DB_HOST: db
+      TZ: Asia/Kolkata
     depends_on:
       db:
         condition: service_healthy
