@@ -14,6 +14,7 @@ pipeline {
         DB_NAME        = "emp_data"
         DB_USER        = "admin"
         MYSQL_PASSWORD = credentials('mysql-password')
+        DOCKER_BUILDKIT = '1'  // Enable BuildKit for faster & reliable Docker builds
     }
 
     stages {
@@ -45,7 +46,7 @@ pipeline {
                 timeout(time: 15, unit: 'MINUTES') {
                     sh '''
                         echo "→ Building Frontend Docker image..."
-                        docker build --no-cache -t $DOCKER_USER/ems-frontend:latest ./Frontend
+                        docker build -t $DOCKER_USER/ems-frontend:latest ./Frontend
                         echo " Frontend image built"
                     '''
                 }
@@ -83,7 +84,7 @@ pipeline {
                             docker push $DOCKER_USER/ems-frontend:latest
                             docker push $DOCKER_USER/ems-reports:latest
 
-                            echo "All images pushed to DockerHub"
+                            echo " All images pushed to DockerHub"
                         '''
                     }
                 }
@@ -98,7 +99,6 @@ pipeline {
                         sh '''
                             echo "→ Deploying on EC2..."
                             ssh -o StrictHostKeyChecking=no ubuntu@$EC2_HOST "
-
                                 echo '→ Pulling latest images...'
                                 docker pull $DOCKER_USER/ems-backend:latest
                                 docker pull $DOCKER_USER/ems-frontend:latest
@@ -145,7 +145,7 @@ pipeline {
                                 echo '→ Cleaning old unused images...'
                                 docker image prune -f
 
-                                echo 'All containers running:'
+                                echo ' All containers running:'
                                 docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
                             "
                         '''
