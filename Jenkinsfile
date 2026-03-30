@@ -28,17 +28,18 @@ pipeline {
         }
 
         // ── STAGE 2: Build Backend Image ──────────────────────────────────────
-        stage('Build Backend') {
-            steps {
-                timeout(time: 10, unit: 'MINUTES') {
-                    sh '''
-                        echo "→ Building Backend Docker image..."
-                        docker build -t $DOCKER_USER/ems-backend:latest ./Backend
-                        echo " Backend image built"
-                    '''
-                }
-            }
+       stage('Build Backend') {
+       steps {
+        timeout(time: 10, unit: 'MINUTES') {
+            sh '''
+                echo "→ Building Backend Docker image..."
+                export DOCKER_BUILDKIT=0
+                docker build -t $DOCKER_USER/ems-backend:latest ./Backend
+                echo " Backend image built"
+            '''
         }
+    }
+}
 
         // ── STAGE 3: Build Frontend Image ─────────────────────────────────────
         stage('Build Frontend') {
