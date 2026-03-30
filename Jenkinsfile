@@ -20,13 +20,19 @@ pipeline {
 
         stage('Build Backend') {
             steps {
-                sh 'docker build -t $DOCKER_USER/ems-backend:latest ./backend'
+                sh 'docker build -t $DOCKER_USER/ems-backend:latest ./Backend'
             }
         }
 
         stage('Build Frontend') {
             steps {
-                sh 'docker build -t $DOCKER_USER/ems-frontend:latest ./frontend'
+                sh 'docker build -t $DOCKER_USER/ems-frontend:latest ./Frontend'
+            }
+        }
+
+        stage('Build Reports Service') {
+            steps {
+                sh 'docker build -t $DOCKER_USER/ems-reports:latest ./reports-service'
             }
         }
 
@@ -41,6 +47,7 @@ pipeline {
                     echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
                     docker push $DOCKER_USER/ems-backend:latest
                     docker push $DOCKER_USER/ems-frontend:latest
+                    docker push $DOCKER_USER/ems-reports:latest
                     '''
                 }
             }
@@ -53,11 +60,14 @@ pipeline {
                     ssh -o StrictHostKeyChecking=no ubuntu@$EC2_HOST "
                         docker pull $DOCKER_USER/ems-backend:latest &&
                         docker pull $DOCKER_USER/ems-frontend:latest &&
+                        docker pull $DOCKER_USER/ems-reports:latest &&
 
                         docker stop ems-backend || true &&
                         docker rm ems-backend || true &&
                         docker stop ems-frontend || true &&
                         docker rm ems-frontend || true &&
+                        docker stop ems-reports || true &&
+                        docker rm ems-reports || true &&
 
                         docker run -d --name ems-backend -p 8081:8080 \\
                           -e SPRING_DATASOURCE_URL=jdbc:mysql://$DB_HOST:3306/$DB_NAME \\
@@ -66,7 +76,14 @@ pipeline {
                           $DOCKER_USER/ems-backend:latest &&
 
                         docker run -d --name ems-frontend -p 80:80 \\
-                          $DOCKER_USER/ems-frontend:latest
+                          $DOCKER_USER/ems-frontend:latest &&
+
+                        docker run -d --name ems-reports -p 8000:8000 \\
+                          -e DB_HOST=$DB_HOST \\
+                          -e DB_NAME=$DB_NAME \\
+                          -e DB_USER=$DB_USER \\
+                          -e DB_PASSWORD=$MYSQL_PASSWORD \\
+                          $DOCKER_USER/ems-reports:latest
                     "
                     '''
                 }
