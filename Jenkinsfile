@@ -14,7 +14,6 @@ pipeline {
         DB_NAME        = "emp_data"
         DB_USER        = "admin"
         MYSQL_PASSWORD = credentials('mysql-password')
-        DOCKER_BUILDKIT = '1'  // Enable BuildKit for faster & reliable Docker builds
     }
 
     stages {
@@ -23,23 +22,23 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-                echo " Code checked out successfully"
+                echo "✅ Code checked out successfully"
             }
         }
 
         // ── STAGE 2: Build Backend Image ──────────────────────────────────────
-       stage('Build Backend') {
-       steps {
-        timeout(time: 10, unit: 'MINUTES') {
-            sh '''
-                echo "→ Building Backend Docker image..."
-                export DOCKER_BUILDKIT=0
-                docker build -t $DOCKER_USER/ems-backend:latest ./Backend
-                echo " Backend image built"
-            '''
+        stage('Build Backend') {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    sh '''
+                        echo "→ Building Backend Docker image..."
+                        export DOCKER_BUILDKIT=0
+                        docker build -t $DOCKER_USER/ems-backend:latest ./Backend
+                        echo "✅ Backend image built"
+                    '''
+                }
+            }
         }
-    }
-}
 
         // ── STAGE 3: Build Frontend Image ─────────────────────────────────────
         stage('Build Frontend') {
@@ -47,8 +46,9 @@ pipeline {
                 timeout(time: 15, unit: 'MINUTES') {
                     sh '''
                         echo "→ Building Frontend Docker image..."
-                        docker build -t $DOCKER_USER/ems-frontend:latest ./Frontend
-                        echo " Frontend image built"
+                        export DOCKER_BUILDKIT=0
+                        docker build --no-cache -t $DOCKER_USER/ems-frontend:latest ./Frontend
+                        echo "✅ Frontend image built"
                     '''
                 }
             }
@@ -60,8 +60,9 @@ pipeline {
                 timeout(time: 10, unit: 'MINUTES') {
                     sh '''
                         echo "→ Building Reports Service Docker image..."
+                        export DOCKER_BUILDKIT=0
                         docker build -t $DOCKER_USER/ems-reports:latest ./reports-service
-                        echo " Reports image built"
+                        echo "✅ Reports Service image built"
                     '''
                 }
             }
@@ -85,7 +86,7 @@ pipeline {
                             docker push $DOCKER_USER/ems-frontend:latest
                             docker push $DOCKER_USER/ems-reports:latest
 
-                            echo " All images pushed to DockerHub"
+                            echo "✅ All images pushed to DockerHub"
                         '''
                     }
                 }
@@ -146,7 +147,7 @@ pipeline {
                                 echo '→ Cleaning old unused images...'
                                 docker image prune -f
 
-                                echo ' All containers running:'
+                                echo '✅ All containers running:'
                                 docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
                             "
                         '''
