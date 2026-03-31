@@ -1,7 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-
+app.use(cors({
+  origin: '*', // Or your frontend URL
+  credentials: true
+}));
 const app = express();
 
 // PORT 
@@ -25,7 +28,7 @@ const dashboardRoutes  = require("./routes/dashboard.routes");
 const errorHandler = require("./middleware/error.middleware");
 
 app.use(cors({
-  origin: ["http://localhost", "http://localhost:5174"],
+  origin: '*', // Allow all origins, or set your frontend public IP/URL like "http://13.205.135.58"
   credentials: true
 }));
 app.use(express.json());
@@ -51,5 +54,5 @@ app.use(errorHandler);
 
 //  START SERVER 
 app.listen(PORT, () => {
-  console.log(`Server running at: http://localhost:${PORT}`);
+   console.log(`Server running at: http://0.0.0.0:${PORT}`);
 });
