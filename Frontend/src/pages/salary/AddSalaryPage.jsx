@@ -22,7 +22,7 @@ function AddSalaryPage() {
 
   return (
     <div className="container mt-4">
-      <button className="btn btn-outline-secondary mb-3" onClick={() => navigate("/dashboard")}>Backto Dashboard</button>
+      <button className="btn btn-outline-secondary mb-3" onClick={() => navigate("/dashboard")}>Back to Dashboard</button>
       <AddSalary employees={employees} />
     </div>
   );
