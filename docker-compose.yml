@@ -1,55 +1,38 @@
 version: "3.8"
+
 services:
 
-  db:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: emp_data
-      TZ: Asia/Kolkata
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend:
-    build: ./Backend
+    image: swapnilthakare86/ems-backend:latest
+    container_name: ems-backend
+    restart: always
     ports:
       - "3000:3000"
-    env_file:
-      - ./Backend/.env
     environment:
-      DB_HOST: db
+      DB_HOST: emp-data.cpg6iaa4wcf8.ap-south-1.rds.amazonaws.com
+      DB_NAME: emp_data
+      DB_USER: admin
+      DB_PASSWORD: ${MYSQL_PASSWORD}
       TZ: Asia/Kolkata
-    depends_on:
-      db:
-        condition: service_healthy
 
   frontend:
-    build: ./Frontend
+    image: swapnilthakare86/ems-frontend:latest
+    container_name: ems-frontend
+    restart: always
     ports:
       - "80:80"
     depends_on:
       - backend
 
   reports:
-    build: ./reports-service
+    image: swapnilthakare86/ems-reports:latest
+    container_name: ems-reports
+    restart: always
     ports:
       - "8000:8000"
-    env_file:
-      - ./reports-service/.env
     environment:
-      DB_HOST: db
+      DB_HOST: emp-data.cpg6iaa4wcf8.ap-south-1.rds.amazonaws.com
+      DB_NAME: emp_data
+      DB_USER: admin
+      DB_PASSWORD: ${MYSQL_PASSWORD}
       TZ: Asia/Kolkata
-    depends_on:
-      db:
-        condition: service_healthy
-
-volumes:
-  mysql_data:
