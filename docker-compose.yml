@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   backend:
-    image: swapnilthakare86/ems-backend:latest
+    build: ./Backend         # build from local Dockerfile
     container_name: ems-backend
     restart: always
     ports:
@@ -18,7 +18,7 @@ services:
       TZ: Asia/Kolkata
 
   frontend:
-    image: swapnilthakare86/ems-frontend:latest
+    build: ./Frontend       #  build from local Dockerfile
     container_name: ems-frontend
     restart: always
     ports:
@@ -27,7 +27,7 @@ services:
       - backend
 
   reports:
-    image: swapnilthakare86/ems-reports:latest
+    build: ./Reports        # build from local Dockerfile
     container_name: ems-reports
     restart: always
     ports:
