@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { Link } from "react-router-dom";
 
 function JobPosition() {
@@ -23,12 +23,12 @@ function JobPosition() {
   }, []);
 
   const fetchDepartments = async () => {
-    const res = await axios.get("http://localhost:3000/api/departments");
+    const res = await axiosClient.get("/departments");
     setDepartments(res.data.data || res.data);
   };
 
   const fetchPositions = async () => {
-    const res = await axios.get("http://localhost:3000/api/job-positions");
+    const res = await axiosClient.get("/job-positions");
     const all = res.data.data || res.data;
     setPositions(all);
     setFilteredPositions(all);
@@ -67,13 +67,13 @@ function JobPosition() {
 
     try {
       if (editId) {
-        await axios.put(
-          `http://localhost:3000/api/job-positions/${editId}`,
+        await axiosClient.put(
+          `/job-positions/${editId}`,
           data
         );
         alert("Updated");
       } else {
-        await axios.post("http://localhost:3000/api/job-positions", data);
+        await axiosClient.post("/job-positions", data);
         alert("Added");
       }
 
@@ -95,7 +95,7 @@ function JobPosition() {
   const deletePosition = async (id) => {
     if (!window.confirm("Delete?")) return;
 
-    await axios.delete(`http://localhost:3000/api/job-positions/${id}`);
+    await axiosClient.delete(`/job-positions/${id}`);;
     fetchPositions();
   };
 

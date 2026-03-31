@@ -1,18 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import axios from "axios";
-
-// Attach JWT to every axios request globally
-axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./index.css";
 import App from "./App.jsx";
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import axiosClient from "./api/axiosClient";
+
+const AUTO_CHECKOUT_URL = `${axiosClient.defaults.baseURL}/attendance/auto-checkout`;
 
 // Auto-checkout on tab close / hide
 const sendAutoCheckout = () => {
@@ -20,7 +15,7 @@ const sendAutoCheckout = () => {
   if (!empId || empId === "undefined") return;
   const payload = JSON.stringify({ employee_id: Number(empId) });
   navigator.sendBeacon(
-    "http://localhost:3000/api/attendance/auto-checkout",
+    AUTO_CHECKOUT_URL,
     new Blob([payload], { type: "application/json" })
   );
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { Link } from "react-router-dom";
 import { validateLocation } from "../../utils/validation";
 
@@ -25,12 +25,12 @@ function LocationManagement() {
   }, []);
 
   const fetchLocations = async () => {
-    const res = await axios.get("http://localhost:3000/api/locations");
+    const res = await axiosClient.get("/locations");
     setLocations(res.data.data || res.data);
   };
 
   const fetchCompanies = async () => {
-    const res = await axios.get("http://localhost:3000/api/companies");
+    const res = await axiosClient.get("/companies");
     setCompanies(res.data.data || res.data);
   };
 
@@ -54,10 +54,10 @@ function LocationManagement() {
 
     try {
       if (editId) {
-        await axios.put(`http://localhost:3000/api/locations/${editId}`, payload);
+        await axiosClient.put(`/locations/${editId}`, payload);
         alert("Location Updated");
       } else {
-        await axios.post("http://localhost:3000/api/locations", payload);
+        await axiosClient.post("/locations", payload);
         alert("Location Added");
       }
       setFormData(emptyForm);
@@ -84,7 +84,7 @@ function LocationManagement() {
 
   const deleteLocation = async (id) => {
     if (!window.confirm("Delete location?")) return;
-    await axios.delete(`http://localhost:3000/api/locations/${id}`);
+    await axiosClient.delete(`/locations/${id}`);
     fetchLocations();
   };
 

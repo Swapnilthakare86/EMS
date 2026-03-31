@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { Link, useNavigate } from "react-router-dom";
 import ProfileCard from "../../components/dashboard/ProfileCard";
 import {
@@ -49,9 +49,7 @@ function AdminDashboard() {
     const load = async () => {
       if (!empId) return;
       try {
-        const res = await axios.get(
-          `http://localhost:3000/api/employees/${empId}`
-        );
+        const res = await axiosClient.get(`/employees/${empId}`);
         const emp = res.data?.data || res.data || {};
         if (emp.first_name) {
           setName(emp.first_name);
@@ -68,10 +66,10 @@ function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const [emp, dept, pos, comp] = await Promise.all([
-          axios.get("http://localhost:3000/api/employees"),
-          axios.get("http://localhost:3000/api/departments"),
-          axios.get("http://localhost:3000/api/job-positions"),
-          axios.get("http://localhost:3000/api/companies")
+          axiosClient.get("/employees"),
+          axiosClient.get("/departments"),
+          axiosClient.get("/job-positions"),
+          axiosClient.get("/companies")
         ]);
 
         setStats({
@@ -84,9 +82,9 @@ function AdminDashboard() {
         const today = new Date().toISOString().slice(0, 10);
         const todayDay = new Date().getDay();
         const employees = emp.data.data || emp.data;
-        const attList = (await axios.get("http://localhost:3000/api/attendance")).data;
-        const leaveList = (await axios.get("http://localhost:3000/api/leave")).data;
-        const leaveStatuses = (await axios.get("http://localhost:3000/api/master-data/category/leave_status")).data;
+        const attList = (await axiosClient.get("/attendance")).data;
+        const leaveList = (await axiosClient.get("/leave")).data;
+        const leaveStatuses = (await axiosClient.get("/master-data/category/leave_status")).data;
         const statuses = leaveStatuses.data || leaveStatuses;
         const approvedId = statuses.find(s => s.value === "Approved")?.master_data_id;
         const attData = attList.data || attList;

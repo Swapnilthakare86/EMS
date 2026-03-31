@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 
 function ResetPassword() {
 
@@ -17,8 +17,8 @@ function ResetPassword() {
 
       try {
 
-        await axios.get(
-          `http://localhost:3000/api/auth/verify-reset-token/${token}`
+        await axiosClient.get(
+          `/auth/verify-reset-token/${token}`
         );
 
         setValidToken(true);
@@ -43,8 +43,8 @@ function ResetPassword() {
 
     try {
 
-      await axios.post(
-        "http://localhost:3000/api/auth/reset-password",
+      await axiosClient.post(
+        "/auth/reset-password",
         { token, password }
       );
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import axiosClient from "../../api/axiosClient";
 
 function Login() {
 
@@ -12,7 +12,7 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const API = "http://localhost:3000/api";
+  const API = "";
 
   const roleMap = {
     1:"Admin",
@@ -33,8 +33,8 @@ function Login() {
 
     try{
 
-      const res = await axios.post(
-        `${API}/auth/login`,
+      const res = await axiosClient.post(
+        `/auth/login`,
         {
           login_id:loginId,
           password

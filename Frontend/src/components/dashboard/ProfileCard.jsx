@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import "./profile.css"
 
 function Avatar({ name }) {
@@ -28,27 +28,27 @@ function ProfileCard() {
 
     const fetchAll = async () => {
       try {
-        const empRes = await axios.get(`http://localhost:3000/api/employees/${empId}`);
+        const empRes = await axiosClient.get(`/employees/${empId}`);
         const emp = empRes.data.data || empRes.data || empRes.data?.employee || null;
         setEmployee(emp);
 
         if (emp?.company_id) {
           try {
-            const c = await axios.get(`http://localhost:3000/api/companies/${emp.company_id}`);
+            const c = await axiosClient.get(`/companies/${emp.company_id}`);
             setCompany(c.data.data || c.data || null);
           } catch (_) { setCompany(null); }
         }
 
         if (emp?.location_id) {
           try {
-            const l = await axios.get(`http://localhost:3000/api/locations/${emp.location_id}`);
+            const l = await axiosClient.get(`/locations/${emp.location_id}`);
             setLocation(l.data.data || l.data || null);
           } catch (_) { setLocation(null); }
         }
 
         if (emp?.role_id) {
           try {
-            const r = await axios.get(`http://localhost:3000/api/roles/${emp.role_id}`);
+            const r = await axiosClient.get(`/roles/${emp.role_id}`);
             const rr = r.data.data || r.data || null;
             setRole(Array.isArray(rr) ? rr[0] : rr);
           } catch (_) { setRole(null); }
@@ -56,7 +56,7 @@ function ProfileCard() {
 
         if (emp?.reporting_manager_id) {
           try {
-            const m = await axios.get(`http://localhost:3000/api/employees/${emp.reporting_manager_id}`);
+            const m = await axiosClient.get(`/employees/${emp.reporting_manager_id}`);
             const mm = m.data.data || m.data || null;
             setManager(mm);
           } catch (_) { setManager(null); }

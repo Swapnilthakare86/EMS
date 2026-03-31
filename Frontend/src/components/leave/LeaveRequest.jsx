@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { useParams, useNavigate } from "react-router-dom";
 import LeaveList from "./LeaveList";
 import { validateLeaveRequest } from "../../utils/validation";
@@ -76,10 +76,10 @@ function LeaveRequest() {
   const fetchMasterData = async () => {
     try {
       const [empRes, mgrRes, typeRes, statusRes] = await Promise.all([
-        axios.get("http://localhost:3000/api/employees"),
-        axios.get("http://localhost:3000/api/employees/managers").catch(() => ({ data: [] })),
-        axios.get("http://localhost:3000/api/master-data/category/leave_type"),
-        axios.get("http://localhost:3000/api/master-data/category/leave_status")
+        axiosClient.get("/employees"),
+        axiosClient.get("/employees/managers").catch(() => ({ data: [] })),
+        axiosClient.get("/master-data/category/leave_type"),
+        axiosClient.get("/master-data/category/leave_status")
       ]);
 
       const empData = empRes.data.data || empRes.data;
@@ -116,7 +116,7 @@ function LeaveRequest() {
 
   const fetchLeave = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/leave/${id}`);
+      const res = await axiosClient.get(`/leave/${id}`);
       const data = res.data.data || res.data;
 
       setFormData({
@@ -147,7 +147,7 @@ function LeaveRequest() {
     setFormData({ ...formData, approved_by: String(newManagerId) });
     if (newManagerId && employeeId) {
       try {
-        await axios.patch(`http://localhost:3000/api/employees/${employeeId}/manager`, {
+        await axiosClient.patch(`/employees/${employeeId}/manager`, {
           reporting_manager_id: Number(newManagerId)
         });
       } catch (err) {
@@ -190,12 +190,12 @@ function LeaveRequest() {
       };
 
       if (isEdit) {
-        await axios.put(`http://localhost:3000/api/leave/${id}`, payload);
+        await axiosClient.put(`/leave/${id}`, payload);
         alert("Leave Updated Successfully");
         setListReload(r => r + 1);
         navigate("/leaves/new");
       } else {
-        await axios.post("http://localhost:3000/api/leave", payload);
+        await axiosClient.post("/leave", payload);
         alert("Leave Request Sent");
         setListReload(r => r + 1);
         setFormData(emptyForm);

@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import AddSalary from "../../components/salary/AddSalary";
 
 function AddSalaryPage() {
@@ -11,7 +11,7 @@ function AddSalaryPage() {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/employees");
+        const res = await axiosClient.get("/employees");
         setEmployees(res.data.data || res.data || []);
       } catch (err) {
         setEmployees([]);

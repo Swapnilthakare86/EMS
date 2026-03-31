@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { validateEmployee } from "../../utils/validation";
 import { useNavigate } from "react-router-dom";
 
@@ -47,13 +47,13 @@ function EmployeeCreate() {
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/api/companies").then(res => setCompanies(res.data.data || res.data || []));
-    axios.get("http://localhost:3000/api/departments").then(res => setDepartments(res.data.data || res.data || []));
-    axios.get("http://localhost:3000/api/job-positions").then(res => setPositions(res.data.data || res.data || []));
-    axios.get("http://localhost:3000/api/master-data/category/employment_type").then(res => setTypes(res.data.data || res.data || []));
-    axios.get("http://localhost:3000/api/employees/managers").then(res => setManagers(res.data.data || [])).catch(() => setManagers([]));
-    axios.get("http://localhost:3000/api/roles").then(res => setRoles(res.data.data || res.data || []));
-    axios.get("http://localhost:3000/api/employees/next-code").then(res => setFormData(prev => ({ ...prev, employee_code: res.data.nextCode }))).catch(() => setFormData(prev => ({ ...prev, employee_code: "EMP001" })));
+    axiosClient.get("/companies").then(res => setCompanies(res.data.data || res.data || []));
+    axiosClient.get("/departments").then(res => setDepartments(res.data.data || res.data || []));
+    axiosClient.get("/job-positions").then(res => setPositions(res.data.data || res.data || []));
+    axiosClient.get("/master-data/category/employment_type").then(res => setTypes(res.data.data || res.data || []));
+    axiosClient.get("/employees/managers").then(res => setManagers(res.data.data || [])).catch(() => setManagers([]));
+    axiosClient.get("/roles").then(res => setRoles(res.data.data || res.data || []));
+    axiosClient.get("/employees/next-code").then(res => setFormData(prev => ({ ...prev, employee_code: res.data.nextCode }))).catch(() => setFormData(prev => ({ ...prev, employee_code: "EMP001" })));
   }, []);
 
   // Email live check
@@ -66,7 +66,7 @@ function EmployeeCreate() {
     const timer = setTimeout(async () => {
       try {
         setCheckingEmail(true);
-        const res = await axios.get(`http://localhost:3000/api/employees/check-email?email=${email}`);
+        const res = await axiosClient.get(`/employees/check-email?email=${email}`);
         setEmailExists(res.data.exists);
         if (res.data.exists) setErrors(prev => ({ ...prev, email: "Email already exists" }));
         else setErrors(prev => { const n = { ...prev }; delete n.email; return n; });
@@ -83,7 +83,7 @@ function EmployeeCreate() {
   // Fetch locations when company changes
   useEffect(() => {
     if (!formData.company_id) return setLocations([]);
-    axios.get(`http://localhost:3000/api/locations/company/${formData.company_id}`).then(res => setLocations(res.data.data || res.data || [])).catch(() => setLocations([]));
+    axiosClient.get(`/locations/company/${formData.company_id}`).then(res => setLocations(res.data.data || res.data || [])).catch(() => setLocations([]));
   }, [formData.company_id]);
 
   const handleChange = (e) => {
@@ -125,7 +125,7 @@ function EmployeeCreate() {
         reporting_manager_id: Number(formData.reporting_manager_id) || null,
         role_id: Number(formData.role_id) || null
       };
-      await axios.post("http://localhost:3000/api/employees", payload);
+      await axiosClient.post("/employees", payload);
       showToast("Employee Created Successfully");
       setFormData(emptyForm);
       setErrors({});

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { Link } from "react-router-dom";
 
 function LeaveList() {
@@ -37,9 +37,9 @@ function LeaveList() {
   const fetchAll = async () => {
     try {
       const [leaveRes, empRes, statusRes] = await Promise.all([
-        axios.get("http://localhost:3000/api/leave"),
-        axios.get("http://localhost:3000/api/employees"),
-        axios.get("http://localhost:3000/api/master-data/category/leave_status")
+        axiosClient.get("/leave"),
+        axiosClient.get("/employees"),
+        axiosClient.get("/master-data/category/leave_status")
       ]);
 
       setLeaves(leaveRes.data.data || leaveRes.data || []);
@@ -54,7 +54,7 @@ function LeaveList() {
   const cancelLeave = async (id) => {
     if (!window.confirm("Cancel this leave request?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/leave/${id}`);
+      await axiosClient.delete(`/leave/${id}`);;
       fetchAll();
     } catch (err) {
       console.error(err);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import ProfileCard from "../../components/dashboard/ProfileCard";
 import { Link } from "react-router-dom";
 import {
@@ -27,7 +27,7 @@ function HRDashboard() {
     const load = async () => {
       if (!empId) return;
       try {
-        const res = await axios.get(`http://localhost:3000/api/employees/${empId}`);
+        const res = await axiosClient.get(`/employees/${empId}`);
         const emp = res.data?.data || res.data || {};
         if (emp.first_name || emp.last_name)
           setName(`${emp.first_name || ""} ${emp.last_name || ""}`.trim());
@@ -42,10 +42,10 @@ function HRDashboard() {
         const today = new Date().toISOString().slice(0, 10);
         const todayDay = new Date().getDay();
         const [empRes, attRes, leaveRes, statusRes] = await Promise.all([
-          axios.get("http://localhost:3000/api/employees"),
-          axios.get("http://localhost:3000/api/attendance"),
-          axios.get("http://localhost:3000/api/leave"),
-          axios.get("http://localhost:3000/api/master-data/category/leave_status")
+          axiosClient.get("/employees"),
+          axiosClient.get("/attendance"),
+          axiosClient.get("/leave"),
+          axiosClient.get("/master-data/category/leave_status")
         ]);
         const employees = empRes.data.data || empRes.data;
         const attData = attRes.data.data || attRes.data;

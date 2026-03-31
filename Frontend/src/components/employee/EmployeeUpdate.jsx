@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { useParams, useNavigate } from "react-router-dom";
 import { validateEmployee } from "../../utils/validation";
 
@@ -56,24 +56,23 @@ function EmployeeUpdate() {
   useEffect(() => {
     fetchEmployee();
 
-    axios.get("http://localhost:3000/api/companies")
+    axiosClient.get("/companies")
       .then(res => setCompanies(res.data.data || res.data || []));
 
-    axios.get("http://localhost:3000/api/departments")
+    axiosClient.get("/departments")
       .then(res => setDepartments(res.data.data || res.data || []));
 
-    axios.get("http://localhost:3000/api/job-positions")
+    axiosClient.get("/job-positions")
       .then(res => setPositions(res.data.data || res.data || []));
 
-    axios.get("http://localhost:3000/api/master-data/category/employment_type")
+    axiosClient.get("/master-data/category/employment_type")
       .then(res => setTypes(res.data.data || res.data || []));
 
-    // Fetch managers from dedicated managers API
-    axios.get("http://localhost:3000/api/employees/managers")
+    axiosClient.get("/employees/managers")
       .then(res => setManagers(res.data.data || []))
       .catch(() => setManagers([]));
 
-    axios.get("http://localhost:3000/api/roles")
+    axiosClient.get("/roles")
       .then(res => setRoles(res.data.data || res.data || []));
 
   }, []);
@@ -85,7 +84,7 @@ function EmployeeUpdate() {
       return;
     }
 
-    axios.get(`http://localhost:3000/api/locations/company/${formData.company_id}`)
+    axiosClient.get(`/locations/company/${formData.company_id}`)
       .then(res => setLocations(res.data.data || res.data || []))
       .catch(() => setLocations([]));
 
@@ -94,7 +93,7 @@ function EmployeeUpdate() {
   // ================= FETCH EMPLOYEE =================
   const fetchEmployee = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/employees/${id}`);
+      const res = await axiosClient.get(`/employees/${id}`);
       const data = res.data.data || res.data;
 
       setFormData({
@@ -147,7 +146,7 @@ function EmployeeUpdate() {
         role_id: Number(formData.role_id) || null
       };
 
-      await axios.put(`http://localhost:3000/api/employees/${id}`, payload);
+      await axiosClient.put(`/employees/${id}`, payload);
       alert("Employee Updated Successfully");
       navigate("/employees");
     } catch (err) {

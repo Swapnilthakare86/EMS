@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { Link } from "react-router-dom";
 
 function ManagerApproval() {
@@ -20,10 +20,10 @@ function ManagerApproval() {
   const fetchAllData = async () => {
 
     const [leaveRes, empRes, statusRes, typeRes] = await Promise.all([
-      axios.get("http://localhost:3000/api/leave"),
-      axios.get("http://localhost:3000/api/employees"),
-      axios.get("http://localhost:3000/api/master-data/category/leave_status"),
-      axios.get("http://localhost:3000/api/master-data/category/leave_type")
+      axiosClient.get("/leave"),
+      axiosClient.get("/employees"),
+      axiosClient.get("/master-data/category/leave_status"),
+      axiosClient.get("/master-data/category/leave_type")
     ]);
 
     const employeesData = empRes.data.data || empRes.data;
@@ -93,8 +93,8 @@ function ManagerApproval() {
       return;
     }
 
-    await axios.put(
-      `http://localhost:3000/api/leave/status/${leaveId}`,
+    await axiosClient.put(
+      `/leave/status/${leaveId}`,
       {
         status_id: Number(statusId),
         approved_by: Number(loggedManagerId)

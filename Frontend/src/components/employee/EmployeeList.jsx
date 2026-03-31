@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { InputGroup, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -26,8 +26,8 @@ function EmployeeList() {
 	// ================= FETCH EMPLOYEES =================
 	const fetchEmployees = (goLastPage = false) => {
 		setLoading(true);
-		axios
-			.get("http://localhost:3000/api/employees")
+		axiosClient
+			.get("/employees")
 			.then((res) => {
 				const data = res.data.data || res.data;
 				if (Array.isArray(data)) {
@@ -80,8 +80,8 @@ function EmployeeList() {
 	// ================= DELETE =================
 	const handleDelete = (id) => {
 		if (!window.confirm("Delete this employee?")) return;
-		axios
-			.delete(`http://localhost:3000/api/employees/${id}`)
+		axiosClient
+			.delete(`/employees/${id}`)
 			.then(() => {
 				setMessage("Employee deleted successfully");
 				setMsgType("success");

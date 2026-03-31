@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { Link, useNavigate } from "react-router-dom";
 
 function Salary() {
@@ -25,7 +25,7 @@ function Salary() {
 
   const fetchEmployees = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/employees");
+      const res = await axiosClient.get("/employees");
       setEmployees(res.data.data || res.data);
     } catch (err) {
       console.error(err);
@@ -34,7 +34,7 @@ function Salary() {
 
   const fetchSalaries = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/salaries");
+      const res = await axiosClient.get("/salaries");
       setSalaries(res.data.data || res.data);
     } catch (err) {
       console.error(err);
@@ -44,7 +44,7 @@ function Salary() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this salary?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/salaries/${id}`);
+      await axiosClient.delete(`/salaries/${id}`);
       fetchSalaries();
     } catch (err) {
       console.error(err);

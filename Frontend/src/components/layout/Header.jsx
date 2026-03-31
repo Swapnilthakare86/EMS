@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 
 function Header() {
 
@@ -7,23 +7,14 @@ function Header() {
   const name = localStorage.getItem("employee_name");
 
   const logout = async () => {
-
     const employee_id = localStorage.getItem("employee_id");
-
     try {
-
-      await axios.post(
-        "http://localhost:3000/api/auth/logout",
-        { employee_id }
-      );
-
+      await axiosClient.post("/auth/logout", { employee_id: Number(employee_id) });
     } catch (err) {
       console.log("Logout error:", err);
     }
-
     localStorage.clear();
     navigate("/login");
-
   };
 
   return (

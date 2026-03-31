@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { FileDown, Users, IndianRupee, Calendar, ClipboardList, ArrowLeft } from "lucide-react";
+import axiosClient from "../../api/axiosClient";
 
-const REPORTS_BASE = "http://localhost:8000/reports";
-const API_BASE     = "http://localhost:3000/api";
+const REPORTS_BASE = `${import.meta.env.VITE_REPORTS_URL}/reports`;
 
 async function downloadUrl(url) {
   const token = localStorage.getItem("token");
@@ -31,7 +30,7 @@ function Reports() {
   const [leaveStatuses, setLeaveStatuses] = useState([]);
 
   useEffect(() => {
-    axios.get(`${API_BASE}/master-data/category/leave_status`)
+    axiosClient.get("/master-data/category/leave_status")
       .then(res => setLeaveStatuses(res.data.data || res.data))
       .catch(console.error);
   }, []);

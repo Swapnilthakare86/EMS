@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import axiosClient from "../../api/axiosClient";
 
 function Register() {
 	const [form, setForm] = useState({
@@ -28,7 +28,7 @@ function Register() {
 		}));
 		setError("");
 		try {
-			const res = await axios.get(`http://localhost:3000/api/employees/code/${code}`);
+			const res = await axiosClient.get(`/employees/code/${code}`);
 			setForm(prev => ({
 				...prev,
 				employee_id: res.data.employee_id,
@@ -49,7 +49,7 @@ function Register() {
 		e.preventDefault();
 		setLoading(true);
 		try {
-			await axios.post("http://localhost:3000/api/auth/register", {
+			await axiosClient.post("/auth/register", {
 				employee_id: form.employee_id,
 				employee_code: form.employee_code,
 				username: form.username,

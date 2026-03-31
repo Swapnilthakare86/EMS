@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { Link } from "react-router-dom";
 import { validateDepartment } from "../../utils/validation";
 
@@ -17,12 +17,12 @@ function DepartmentManagement() {
   }, []);
 
   const fetchDepartments = async () => {
-    const res = await axios.get("http://localhost:3000/api/departments");
+    const res = await axiosClient.get("/departments");
     setDepartments(res.data.data || res.data);
   };
 
   const fetchCompanies = async () => {
-    const res = await axios.get("http://localhost:3000/api/companies");
+    const res = await axiosClient.get("/companies");
     const companyList = res.data.data || res.data;
     setCompanies(companyList);
 
@@ -57,10 +57,10 @@ function DepartmentManagement() {
     }
     try {
       if (editId) {
-        await axios.put(`http://localhost:3000/api/departments/${editId}`, formData);
+        await axiosClient.put(`/departments/${editId}`, formData);
         alert("Department Updated");
       } else {
-        await axios.post("http://localhost:3000/api/departments", formData);
+        await axiosClient.post("/departments", formData);
         alert("Department Added");
       }
       setFormData(emptyForm);
@@ -80,7 +80,7 @@ function DepartmentManagement() {
 
   const deleteDepartment = async (id) => {
     if (!window.confirm("Delete this department?")) return;
-    await axios.delete(`http://localhost:3000/api/departments/${id}`);
+    await axiosClient.delete(`/departments/${id}`);;
     fetchDepartments();
   };
 

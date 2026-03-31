@@ -2,7 +2,7 @@ import { useState } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { validateSalary } from "../../utils/validation";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 
 function AddSalary({ employees, fetchSalaries }) {
   const emptyForm = {
@@ -30,7 +30,7 @@ function AddSalary({ employees, fetchSalaries }) {
     if (Object.keys(validationErrors).length > 0) return;
 
     try {
-      await axios.post("http://localhost:3000/api/salaries", formData);
+      await axiosClient.post("/salaries", formData);
       alert("Salary added successfully");
       setFormData(emptyForm);
       setErrors({});

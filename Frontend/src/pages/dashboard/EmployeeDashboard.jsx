@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import ProfileCard from "../../components/dashboard/ProfileCard";
 import {
   Calendar,
@@ -59,12 +59,10 @@ function EmployeeDashboard() {
     try {
       const today = new Date().toISOString().slice(0, 10);
 
-      const attPromise = axios.get("http://localhost:3000/api/attendance");
-      const empPromise = axios.get(
-        `http://localhost:3000/api/employees/${empId}`
-      );
-      const leavePromise = axios
-        .get(`http://localhost:3000/api/leave/employee/${empId}`)
+      const attPromise = axiosClient.get("/attendance");
+      const empPromise = axiosClient.get(`/employees/${empId}`);
+      const leavePromise = axiosClient
+        .get(`/leave/employee/${empId}`)
         .catch((err) => {
           if (err.response?.status === 404) return { data: [] };
           throw err;
@@ -74,7 +72,7 @@ function EmployeeDashboard() {
         attPromise,
         leavePromise,
         empPromise,
-        axios.get("http://localhost:3000/api/employees")
+        axiosClient.get("/employees")
       ]);
 
       const attendance = attRes.data.data || attRes.data || [];

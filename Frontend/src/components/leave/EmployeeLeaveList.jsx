@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { useNavigate } from "react-router-dom";
 
 function EmployeeLeaveList() {
@@ -22,9 +22,9 @@ function EmployeeLeaveList() {
   const fetchAll = async () => {
     try {
       const [leaveRes, empRes, statusRes] = await Promise.all([
-        axios.get("http://localhost:3000/api/leave"),
-        axios.get("http://localhost:3000/api/employees"),
-        axios.get("http://localhost:3000/api/master-data/category/leave_status")
+        axiosClient.get("/leave"),
+        axiosClient.get("/employees"),
+        axiosClient.get("/master-data/category/leave_status")
       ]);
       setLeaves(leaveRes.data.data || leaveRes.data || []);
       setEmployees(empRes.data.data || empRes.data || []);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import axiosClient from "../../api/axiosClient";
 import { validateCompany } from "../../utils/validation";
 
 function CompanyManagement() {
@@ -27,7 +27,7 @@ useEffect(() => {
 
 const fetchCompanies = async () => {
 	try {
-		const res = await axios.get("http://localhost:3000/api/companies");
+		const res = await axiosClient.get("/companies");
 		setCompanies(res.data.data || res.data);
 	} catch (err) {
 		console.log(err);
@@ -70,8 +70,8 @@ const handleSubmit = async (e) => {
 
 		if (editId) {
 
-			await axios.put(
-				`http://localhost:3000/api/companies/${editId}`,
+			await axiosClient.put(
+				`/companies/${editId}`,
 				formData
 			);
 
@@ -79,8 +79,8 @@ const handleSubmit = async (e) => {
 
 		} else {
 
-			await axios.post(
-				"http://localhost:3000/api/companies",
+			await axiosClient.post(
+				"/companies",
 				formData
 			);
 
@@ -123,8 +123,8 @@ const deleteCompany = async (id) => {
 
 	try {
 
-		await axios.delete(
-			`http://localhost:3000/api/companies/${id}`
+		await axiosClient.delete(
+			`/companies/${id}`
 		);
 
 		alert("Company Deleted");
