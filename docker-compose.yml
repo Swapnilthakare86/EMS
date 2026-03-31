@@ -27,7 +27,7 @@ services:
       - backend
 
   reports:
-    build: ./Reports        # build from local Dockerfile
+    build: ./reports-service     # build from local Dockerfile
     container_name: ems-reports
     restart: always
     ports:
