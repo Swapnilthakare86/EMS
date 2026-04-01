@@ -1,20 +1,20 @@
-// ─── Store UTC, Display IST ───────────────────────────────────────────────
-// Backend stores: "HH:MM:SS" (UTC)
-// Frontend shows: converted to user's local time (en-IN = IST)
+// ─── Store IST, Display IST ───────────────────────────────────────────────
+// Backend stores: "HH:MM:SS" (IST)
+// Frontend shows: IST directly without UTC conversion
 
 const LOCALE  = "en-IN";
 const TZ      = "Asia/Kolkata";
 
 /**
- * Format a TIME string "HH:MM:SS" (stored as UTC) → "10:30 AM" in IST
+ * Format a TIME string "HH:MM:SS" (stored as IST) → "10:30 AM"
  */
 export function formatTime(timeStr) {
   if (!timeStr || timeStr === "-" || timeStr === "00:00:00") return "-";
-  // Combine with today's UTC date so JS can convert timezone correctly
-  const todayUTC = new Date().toISOString().slice(0, 10);
-  const dt = new Date(`${todayUTC}T${timeStr}Z`); // Z = UTC
-  if (isNaN(dt)) return timeStr;
-  return dt.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: TZ });
+  const [h, m] = timeStr.split(":");
+  const hour = parseInt(h);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 || 12;
+  return `${String(hour12).padStart(2, "0")}:${m} ${ampm}`;
 }
 
 /**
@@ -38,40 +38,41 @@ export function formatDateTime(isoStr) {
 }
 
 /**
- * Get today's date in YYYY-MM-DD (UTC) — for DB queries
+ * Get today's date in YYYY-MM-DD (IST) — for DB queries
  */
 export function todayUTC() {
-  return new Date().toISOString().slice(0, 10);
+  return new Date().toLocaleDateString("en-CA", { timeZone: TZ });
 }
 
 /**
- * Get current time in HH:MM:SS (UTC) — for storing in DB
+ * Get current time in HH:MM:SS (IST) — for storing in DB
  */
 export function nowTimeUTC() {
-  return new Date().toISOString().slice(11, 19);
+  return new Date().toLocaleTimeString("en-GB", { timeZone: TZ, hour12: false });
 }
 
 /**
- * Calculate working hours between two UTC time strings.
+ * Calculate working hours between two IST time strings.
  * If checkOut is missing and isToday=true, calculates from checkIn to NOW.
  */
 export function getWorkingHours(checkIn, checkOut, isToday = false) {
   if (!checkIn || checkIn === "-") return 0;
   const base  = "1970-01-01T";
-  const start = new Date(`${base}${checkIn}Z`);
-  // If no checkout and it's today → use current UTC time as end
-  const nowUTC = new Date().toISOString().slice(11, 19);
+  const start = new Date(`${base}${checkIn}`);
+
+  // If no checkout and it's today → use current IST time as end
+  const nowIST = new Date().toLocaleTimeString("en-GB", { timeZone: TZ, hour12: false });
   const endStr = (!checkOut || checkOut === "-" || checkOut === "00:00:00")
-    ? (isToday ? nowUTC : null)
+    ? (isToday ? nowIST : null)
     : checkOut;
   if (!endStr) return 0;
-  const end = new Date(`${base}${endStr}Z`);
+  const end = new Date(`${base}${endStr}`);
   if (end <= start) return 0;
   return (end - start) / (1000 * 60 * 60);
 }
 
 /**
- * Format working hours as "08:30 hrs"
+ * Format working hours as "08h 30m"
  * Pass isToday=true when checkout is missing but employee is still working
  */
 export function formatHours(checkIn, checkOut, isToday = false) {
