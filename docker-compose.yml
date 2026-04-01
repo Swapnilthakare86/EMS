@@ -12,7 +12,10 @@ services:
       - .env
 
   frontend:
-    build: ./Frontend
+    build:
+      context: ./Frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
     container_name: ems-frontend
     restart: always
     ports:
