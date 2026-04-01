@@ -10,28 +10,31 @@ pipeline {
 
         stage('Deploy EMS') {
             steps {
-                sh '''
-                    set -e
-                    cd $WORKSPACE
+                withCredentials([file(credentialsId: 'ems-env-file', variable: 'ENV_FILE')]) {
+                    sh '''
+                        set -e
+                        cd $WORKSPACE
+                        cp $ENV_FILE .env
 
-                    echo "🛑 Stop old containers"
-                    docker-compose down || true
+                        echo "Stopping old containers"
+                        docker-compose down || true
 
-                    echo "🚀 Build and start new stack"
-                    docker-compose up -d --build
+                        echo "Building and starting new stack"
+                        docker-compose up -d --build
 
-                    echo "📦 Running containers"
-                    docker ps
-                '''
+                        echo "Running containers"
+                        docker ps
+                    '''
+                }
             }
         }
     }
     post {
         success {
-            echo '✅ Deployment successful'
+            echo 'Deployment successful'
         }
         failure {
-            echo '❌ Deployment failed'
+            echo 'Deployment failed'
         }
     }
 }
