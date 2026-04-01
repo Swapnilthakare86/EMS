@@ -1,37 +1,38 @@
 pipeline {
     agent any
 
-    environment {
-        COMPOSE_PROJECT_DIR = "/home/ubuntu/devops"
-    }
-
     stages {
-        stage('Pull') {
+        stage('Checkout') {
             steps {
-                sh 'cd $COMPOSE_PROJECT_DIR && git pull'
+                checkout scm
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy EMS') {
             steps {
-                sh 'cd $COMPOSE_PROJECT_DIR && docker-compose --env-file .env up -d --build'
-            }
-        }
+                sh '''
+                    set -e
+                    cd $WORKSPACE
 
-        stage('Verify') {
-            steps {
-                sh 'docker ps'
+                    echo "🛑 Stop old containers"
+                    docker-compose down || true
+
+                    echo "🚀 Build and start new stack"
+                    docker-compose up -d --build
+
+                    echo "📦 Running containers"
+                    docker ps
+                '''
             }
         }
     }
 
     post {
         success {
-            echo "Deployment Successful!"
+            echo '✅ Deployment successful'
         }
         failure {
-            echo "Deployment Failed!"
+            echo '❌ Deployment failed'
         }
-        
     }
 }
