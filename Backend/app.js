@@ -1,10 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-app.use(cors({
-  origin: '*', // Or your frontend URL
-  credentials: true
-}));
+
 const app = express();
 
 // PORT 
@@ -22,21 +19,20 @@ const locationRoutes = require("./routes/location.routes");
 const leaveRequestRoutes = require("./routes/leaveRequest.routes");
 const companyRoutes = require("./routes/company.routes");
 const masterDataRoutes = require("./routes/masterData.routes");
-const dashboardRoutes  = require("./routes/dashboard.routes");
+const dashboardRoutes = require("./routes/dashboard.routes");
 
 //  MIDDLEWARE 
 const errorHandler = require("./middleware/error.middleware");
 
 app.use(cors({
-  origin: '*', // Allow all origins, or set your frontend public IP/URL like "http://13.205.135.58"
+  origin: '*',
   credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 // API ROUTES 
-app.use("/api/auth",authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/roles", roleRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/salaries", salaryRoutes);
