@@ -50,7 +50,7 @@ exports.getAllAttendance = async () => {
   `SELECT 
     a.attendance_id,
     a.employee_id,
-    DATE(a.attendance_date) AS attendance_date,
+    DATE_FORMAT(a.attendance_date, '%Y-%m-%d') AS attendance_date,
     a.check_in,
     a.check_out,
     a.attendance_status_id,
@@ -71,7 +71,8 @@ exports.getAllAttendance = async () => {
 
 exports.getMyAttendance = async (employeeId) => {
   const [rows] = await db.execute(
-    `SELECT attendance_id, employee_id, DATE(attendance_date) AS attendance_date,
+    `SELECT attendance_id, employee_id,
+            DATE_FORMAT(attendance_date, '%Y-%m-%d') AS attendance_date,
             check_in, check_out, attendance_status_id, remarks
      FROM attendance
      WHERE employee_id = ?
