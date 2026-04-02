@@ -115,8 +115,40 @@ h4 {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
+  .container {
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+  }
+
+  .d-flex.justify-content-between.mb-3 {
+    gap: 0.75rem;
+    align-items: flex-start !important;
+    flex-wrap: wrap;
+  }
+
+  .alert.d-flex {
+    align-items: flex-start !important;
+  }
+
+  .row > .col-md-5,
+  .row > .col-md-7 {
+    width: 100%;
+  }
+
+  .react-calendar {
+    padding: 8px;
+    margin-bottom: 1rem;
+  }
+
   .react-calendar__tile {
     height: 50px;
+  }
+
+  .react-calendar .badge {
+    font-size: 9px;
+    padding: 2px 5px;
+    bottom: 4px;
+    right: 4px;
   }
 
   .table {
@@ -125,5 +157,35 @@ h4 {
 
   .card-body {
     padding: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .react-calendar {
+    font-size: 0.82rem;
+  }
+
+  .react-calendar__navigation button {
+    min-width: 34px;
+    font-size: 0.9rem;
+  }
+
+  .react-calendar__tile {
+    height: 44px;
+    padding: 4px 2px;
+  }
+
+  .table th,
+  .table td {
+    white-space: nowrap;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+
+  .btn {
+    width: 100%;
   }
 }

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import "./App.css";
 
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -37,7 +38,7 @@ function App() {
     <BrowserRouter>
       <Header />
 
-      <div className="container" style={{ paddingTop: "80px", paddingBottom: "70px" }}>
+      <main className="app-shell">
         <Routes>
           <Route
             path="/"
@@ -252,7 +253,7 @@ function App() {
             }
           />
         </Routes>
-      </div>
+      </main>
 
       <Footer />
     </BrowserRouter>

@@ -1,43 +1,108 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app-shell {
+  flex: 1;
+  width: 100%;
+  padding: 88px 16px 80px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.app-navbar {
+  min-height: 64px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+}
+
+.app-navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app-navbar-brand {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.app-navbar-user,
+.app-navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.app-navbar-user-name {
+  max-width: min(42vw, 320px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-footer {
+  min-height: 44px;
+}
+
+.table-responsive {
+  -webkit-overflow-scrolling: touch;
+}
+
+.form-control,
+.form-select,
+.btn {
+  max-width: 100%;
+}
+
+@media (max-width: 767.98px) {
+  .app-shell {
+    padding: 92px 12px 84px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .app-navbar {
+    min-height: 72px;
+  }
+
+  .app-navbar-inner {
+    align-items: stretch;
+  }
+
+  .app-navbar-brand {
+    width: 100%;
+  }
+
+  .app-navbar-user,
+  .app-navbar-auth {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .app-navbar-auth .btn,
+  .app-navbar-user .btn {
+    flex: 1 1 140px;
+  }
+
+  .app-navbar-user-name {
+    max-width: calc(100% - 110px);
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .app-footer {
+    min-height: 48px;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (max-width: 575.98px) {
+  .app-shell {
+    padding-inline: 10px;
   }
 }
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
