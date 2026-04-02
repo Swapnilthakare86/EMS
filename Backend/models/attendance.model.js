@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { getAttendanceDateTime } = require("../utils/attendanceTime");
 
 /* =========================
    CREATE ATTENDANCE
@@ -86,28 +87,23 @@ exports.getMyAttendance = async (employeeId) => {
 ========================= */
 
 exports.autoCheckout = async (employeeId) => {
-  const now = new Date();
-  const hh = String(now.getHours()).padStart(2, "0");
-  const mm = String(now.getMinutes()).padStart(2, "0");
-  const ss = String(now.getSeconds()).padStart(2, "0");
-  const checkOut = `${hh}:${mm}:${ss}`;
-  const today = now.toISOString().slice(0, 10);
+  const { attendanceDate, attendanceTime } = getAttendanceDateTime();
 
   // Only update if checked-in today and check_out is null
   const [rows] = await db.execute(
     `SELECT attendance_id, check_in FROM attendance
      WHERE employee_id = ? AND DATE(attendance_date) = ? AND check_in IS NOT NULL AND (check_out IS NULL OR check_out = '00:00:00')
      LIMIT 1`,
-    [employeeId, today]
+    [employeeId, attendanceDate]
   );
   if (!rows.length) return null;
 
   const { attendance_id, check_in } = rows[0];
-  const status = calcStatus(check_in, checkOut);
+  const status = calcStatus(check_in, attendanceTime);
 
   const [result] = await db.execute(
     `UPDATE attendance SET check_out = ?, attendance_status_id = ? WHERE attendance_id = ?`,
-    [checkOut, status, attendance_id]
+    [attendanceTime, status, attendance_id]
   );
   return result;
 };

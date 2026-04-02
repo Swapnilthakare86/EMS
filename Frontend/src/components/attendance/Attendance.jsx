@@ -294,7 +294,7 @@ function Attendance() {
                 <table className="table table-bordered mb-0">
                   <thead className="table-light">
                     <tr>
-                      <th>Employee</th><th>Check In</th><th>Check Out</th>
+                      <th>Employee</th><th>First Login</th><th>Last Logout</th>
                       <th>Status</th><th>Total Hours</th>
                     </tr>
                   </thead>

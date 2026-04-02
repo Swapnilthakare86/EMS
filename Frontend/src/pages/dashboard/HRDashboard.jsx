@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import ProfileCard from "../../components/dashboard/ProfileCard";
 import { Link } from "react-router-dom";
+import { todayUTC } from "../../utils/timeUtils";
 import {
   Calendar,
   FileText,
@@ -39,7 +40,7 @@ function HRDashboard() {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const today = new Date().toISOString().slice(0, 10);
+        const today = todayUTC();
         const todayDay = new Date().getDay();
         const [empRes, attRes, leaveRes, statusRes] = await Promise.all([
           axiosClient.get("/employees"),

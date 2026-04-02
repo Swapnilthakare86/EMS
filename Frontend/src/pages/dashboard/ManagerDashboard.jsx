@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import { Link } from "react-router-dom";
 import ProfileCard from "../../components/dashboard/ProfileCard";
+import { todayUTC } from "../../utils/timeUtils";
 import {
   Calendar,
   Users,
@@ -38,7 +39,7 @@ function ManagerDashboard() {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const today = new Date().toISOString().slice(0, 10);
+        const today = todayUTC();
         const todayDay = new Date().getDay();
         const [empRes, attRes, leaveRes, statusRes] = await Promise.all([
           axiosClient.get("/employees"),

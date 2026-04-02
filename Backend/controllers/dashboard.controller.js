@@ -1,8 +1,9 @@
 const db = require("../config/db");
+const { getAttendanceDate } = require("../utils/attendanceTime");
 
 exports.getSummary = async (req, res, next) => {
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getAttendanceDate();
     const [[row]] = await db.execute(
       `SELECT
         (SELECT COUNT(*) FROM employee)   AS total_employees,

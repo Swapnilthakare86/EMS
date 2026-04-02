@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const { getAttendanceDateTime } = require("../utils/attendanceTime");
 
 // master_data IDs: 4=Present, 5=Absent, 6=On Leave, 13=Half Day
 const calcStatus = (checkIn, checkOut) => {
@@ -14,21 +15,33 @@ const calcStatus = (checkIn, checkOut) => {
 };
 
 exports.markLogin = async (employeeId) => {
-  const today = new Date().toISOString().slice(0, 10);  // UTC date YYYY-MM-DD
-  const now   = new Date().toISOString().slice(11, 19); // UTC time HH:MM:SS
+  const { attendanceDate, attendanceTime } = getAttendanceDateTime();
 
   const [rows] = await db.execute(
     "SELECT * FROM attendance WHERE employee_id=? AND attendance_date=?",
-    [employeeId, today]
+    [employeeId, attendanceDate]
   );
 
-  if (rows.length) return rows[0];
+  if (rows.length) {
+    const record = rows[0];
+
+    if (record.check_in) return record;
+
+    await db.execute(
+      `UPDATE attendance
+       SET check_in=?, attendance_status_id=?, remarks=?
+       WHERE attendance_id=?`,
+      [attendanceTime, 4, "System Checkin", record.attendance_id]
+    );
+
+    return { ...record, check_in: attendanceTime, attendance_status_id: 4 };
+  }
 
   const [result] = await db.execute(
     `INSERT INTO attendance
      (employee_id, attendance_date, check_in, attendance_status_id, remarks)
      VALUES (?, ?, ?, ?, 'System Checkin')`,
-    [employeeId, today, now, 4]
+    [employeeId, attendanceDate, attendanceTime, 4]
   );
 
   return result;
@@ -36,25 +49,31 @@ exports.markLogin = async (employeeId) => {
 
 
 exports.markLogout = async (employeeId) => {
-  const today = new Date().toISOString().slice(0, 10);  // UTC date
-  const now   = new Date().toISOString().slice(11, 19); // UTC time
+  const { attendanceDate, attendanceTime } = getAttendanceDateTime();
 
   const [rows] = await db.execute(
     "SELECT * FROM attendance WHERE employee_id=? AND attendance_date=?",
-    [employeeId, today]
+    [employeeId, attendanceDate]
   );
 
   if (!rows.length) return null;
 
   const record = rows[0];
-  if (record.check_out) return record;
+  if (!record.check_in) return record;
 
-  const newStatus = calcStatus(record.check_in, now);
+  const latestCheckout =
+    record.check_out && record.check_out > attendanceTime
+      ? record.check_out
+      : attendanceTime;
+
+  if (record.check_out === latestCheckout) return record;
+
+  const newStatus = calcStatus(record.check_in, latestCheckout);
 
   await db.execute(
     "UPDATE attendance SET check_out=?, attendance_status_id=? WHERE attendance_id=?",
-    [now, newStatus, record.attendance_id]
+    [latestCheckout, newStatus, record.attendance_id]
   );
 
-  return record;
+  return { ...record, check_out: latestCheckout, attendance_status_id: newStatus };
 };

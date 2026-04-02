@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import { Link, useNavigate } from "react-router-dom";
 import ProfileCard from "../../components/dashboard/ProfileCard";
+import { todayUTC } from "../../utils/timeUtils";
 import {
   Calendar,
   FileText,
@@ -79,7 +80,7 @@ function AdminDashboard() {
           companies: (comp.data.data || comp.data).length
         });
 
-        const today = new Date().toISOString().slice(0, 10);
+        const today = todayUTC();
         const todayDay = new Date().getDay();
         const employees = emp.data.data || emp.data;
         const attList = (await axiosClient.get("/attendance")).data;

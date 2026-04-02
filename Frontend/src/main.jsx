@@ -9,7 +9,7 @@ import axiosClient from "./api/axiosClient";
 
 const AUTO_CHECKOUT_URL = `${axiosClient.defaults.baseURL}/attendance/auto-checkout`;
 
-// Auto-checkout on tab close / hide
+// Auto-checkout only when the page is actually being closed/unloaded.
 const sendAutoCheckout = () => {
   const empId = localStorage.getItem("employee_id");
   if (!empId || empId === "undefined") return;
@@ -20,10 +20,7 @@ const sendAutoCheckout = () => {
   );
 };
 
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "hidden") sendAutoCheckout();
-});
-
+window.addEventListener("pagehide", sendAutoCheckout);
 window.addEventListener("beforeunload", sendAutoCheckout);
 
 console.log("main.jsx: starting render");

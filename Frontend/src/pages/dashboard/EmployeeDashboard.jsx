@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../../api/axiosClient";
 import ProfileCard from "../../components/dashboard/ProfileCard";
+import { todayUTC } from "../../utils/timeUtils";
 import {
   Calendar,
   FileText,
@@ -35,14 +36,17 @@ function EmployeeDashboard() {
     fetchDashboard();
   }, [empId]);
 
-  // Live ticker: check_in is stored as UTC "HH:MM:SS", diff against system now
+  // Live ticker uses the same IST clock as attendance storage.
   useEffect(() => {
     if (!checkInTime) return;
     const tick = () => {
-      const now = new Date(); // system local time
-      const todayUTC = now.toISOString().slice(0, 10); // YYYY-MM-DD
-      const start = new Date(`${todayUTC}T${checkInTime}Z`); // parse as UTC
-      const diffSec = Math.max(0, Math.floor((now - start) / 1000));
+      const nowTime = new Date().toLocaleTimeString("en-GB", {
+        timeZone: "Asia/Kolkata",
+        hour12: false,
+      });
+      const start = new Date(`1970-01-01T${checkInTime}`);
+      const end = new Date(`1970-01-01T${nowTime}`);
+      const diffSec = Math.max(0, Math.floor((end - start) / 1000));
       const hh = Math.floor(diffSec / 3600);
       const mm = Math.floor((diffSec % 3600) / 60);
       const ss = diffSec % 60;
@@ -57,7 +61,7 @@ function EmployeeDashboard() {
 
   const fetchDashboard = async () => {
     try {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = todayUTC();
 
       const attPromise = axiosClient.get("/attendance");
       const empPromise = axiosClient.get(`/employees/${empId}`);
