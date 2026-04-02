@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import axiosClient from "../../api/axiosClient";
 import { useNavigate } from "react-router-dom";
-import "./attendance.css";
 import {
   formatTime,
   formatHours,

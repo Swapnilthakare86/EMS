@@ -18,24 +18,25 @@ function Header() {
   };
 
   return (
-    <nav className="navbar navbar-dark bg-dark fixed-top app-navbar">
-      <div className="container-fluid app-navbar-inner">
-        <Link className="navbar-brand app-navbar-brand" to={name ? "/dashboard" : "/login"}>
-          EMS
-        </Link>
+    <nav className="navbar navbar-dark bg-dark px-3 fixed-top">
+
+      <Link className="navbar-brand" to={name ? "/dashboard" : "/login"}>
+        EMS
+      </Link>
+      <div className="ms-auto">
         {name ? (
-          <div className="app-navbar-user text-white">
-            <span className="app-navbar-user-name">{name}</span>
+          <div className="text-white">
+            {name}
             <button
-              className="btn btn-sm btn-danger"
+              className="btn btn-sm btn-danger ms-3"
               onClick={logout}
             >
               Logout
             </button>
           </div>
         ) : (
-          <div className="app-navbar-auth">
-            <Link className="btn btn-sm btn-outline-light" to="/login">
+          <div>
+            <Link className="btn btn-sm btn-outline-light me-2" to="/login">
               Login
             </Link>
             <Link className="btn btn-sm btn-outline-light" to="/register">
@@ -44,6 +45,7 @@ function Header() {
           </div>
         )}
       </div>
+
     </nav>
   );
 }
