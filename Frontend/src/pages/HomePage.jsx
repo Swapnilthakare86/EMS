@@ -5,7 +5,7 @@ function HomePage() {
       style={{ height: "80vh" }}
     >
       <h1 className="text-secondary fw-bold text-center">
-        Employee Management System
+        Employee Management system
       </h1>
 
       <h2 className="text-secondary text-center">
