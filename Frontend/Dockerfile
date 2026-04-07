@@ -1,13 +1,16 @@
 # Step 1: Build frontend
 FROM node:20-alpine AS build
 WORKDIR /app
+
+# Accept build argument before COPY so it overrides .env
+ARG VITE_API_URL
+ARG VITE_REPORTS_URL
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_REPORTS_URL=$VITE_REPORTS_URL
+
 COPY package*.json ./
 RUN npm install
 COPY . .
-
-# Accept build argument
-ARG VITE_API_URL
-ENV VITE_API_URL=$VITE_API_URL
 
 RUN npm run build
 

@@ -16,6 +16,7 @@ services:
       context: ./Frontend
       args:
         VITE_API_URL: ${VITE_API_URL}
+        VITE_REPORTS_URL: ${VITE_REPORTS_URL}
     container_name: ems-frontend
     restart: always
     ports:
